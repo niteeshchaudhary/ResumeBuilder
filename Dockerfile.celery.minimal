@@ -1,0 +1,70 @@
+# ==========================
+# Stage 1: Build dependencies
+# ==========================
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install only essential build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy minimal requirements for Celery only
+COPY reserish/celery-requirements.txt .
+
+# Install only essential packages (NO PyTorch, NO transformers, NO heavy ML)
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r celery-requirements.txt && \
+    rm -rf /root/.cache/pip
+
+# =======================
+# Stage 2: Final image
+# =======================
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install only runtime dependencies
+RUN apt-get update && apt-get install -y \
+    netcat-openbsd \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/cache/apt
+
+# Copy installed Python packages from builder
+COPY --from=builder /usr/local /usr/local
+
+# Copy only essential application code (exclude ML-heavy modules)
+COPY reserish/ .
+
+# Remove ML-heavy directories and files that aren't needed for Celery
+RUN rm -rf /app/bkend_function/enterprise/ \
+    && rm -rf /app/bkend_function/individual/ \
+    && rm -rf /app/bkend_function/jobs/ \
+    && rm -rf /app/bkend_function/lataxtemplates/ \
+    && rm -rf /app/bkend_function/resume_src/ \
+    && rm -rf /app/bkend_function/text-vector/ \
+    && rm -rf /app/myExperiments/ \
+    && rm -rf /app/latex/ \
+    && rm -rf /app/migmedia/
+
+# Make entrypoint scripts executable
+RUN chmod +x /app/entrypoint_celery.sh /app/entrypoint_celery_beat.sh
+
+# Clean up Python cache and optimize
+RUN find /usr/local -name "*.pyc" -delete \
+    && find /usr/local -name "__pycache__" -type d -delete \
+    && find /app -name "*.pyc" -delete \
+    && find /app -name "__pycache__" -type d -delete
+
+# Default command
+CMD ["/app/entrypoint_celery.sh"]
+

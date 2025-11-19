@@ -1,0 +1,11 @@
+- type: "liveserver"
+  machine_type: Standard_M96ds_1_v3
+  count: 1
+  os: "windows"
+  disks:
+    boot:
+      disk_type: StandardSSD_LRS
+      disk_size_gb: 256
+    data:
+      - disk_type: Premium_LRS
+        disk_size_gb: 1024

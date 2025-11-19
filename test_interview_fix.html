@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Fix Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .status.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>AI Interview Fix Test</h1>
+    
+    <div class="test-section">
+        <h2>State Management Test</h2>
+        <button class="test-button" onclick="testStateManagement()">Test State Management</button>
+        <div id="state-status" class="status info">Ready to test</div>
+        <div id="state-log" class="log"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Interview Flow Simulation</h2>
+        <button class="test-button" onclick="simulateInterviewFlow()">Simulate Interview Flow</button>
+        <div id="flow-status" class="status info">Ready to test</div>
+        <div id="flow-log" class="log"></div>
+    </div>
+
+    <script>
+        function log(elementId, message) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            element.textContent += `[${timestamp}] ${message}\n`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        function setStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+
+        function testStateManagement() {
+            log('state-log', 'Testing state management...');
+            
+            // Simulate the state management logic
+            let isInterviewStarted = false;
+            let waitingForUserResponse = false;
+            let isListening = false;
+            let interviewQuestions = [];
+            let currentQuestionIndex = 0;
+            
+            // Simulate askQuestionWithQuestions function
+            function askQuestionWithQuestions(questionIndex, questions) {
+                log('state-log', `Asking question ${questionIndex} of ${questions.length}`);
+                
+                // Set interview state and questions immediately
+                isInterviewStarted = true;
+                interviewQuestions = questions;
+                waitingForUserResponse = true;
+                
+                log('state-log', `State after askQuestionWithQuestions:`);
+                log('state-log', `  isInterviewStarted: ${isInterviewStarted}`);
+                log('state-log', `  waitingForUserResponse: ${waitingForUserResponse}`);
+                log('state-log', `  interviewQuestions.length: ${interviewQuestions.length}`);
+                
+                // Simulate speaking question
+                setTimeout(() => {
+                    log('state-log', 'AI finished speaking, starting to listen...');
+                    startListening();
+                }, 1000);
+            }
+            
+            function startListening() {
+                log('state-log', 'Starting to listen for user response');
+                log('state-log', `Current state - isListening: ${isListening}, waitingForUserResponse: ${waitingForUserResponse}`);
+                
+                if (isListening) {
+                    log('state-log', 'Already listening, skipping');
+                    return;
+                }
+                
+                if (!waitingForUserResponse) {
+                    log('state-log', 'Setting waitingForUserResponse to true');
+                    waitingForUserResponse = true;
+                }
+                
+                isListening = true;
+                log('state-log', 'Listening started successfully');
+            }
+            
+            function processUserResponse(responseText) {
+                log('state-log', `Processing user response: ${responseText}`);
+                log('state-log', `Current interview state - isInterviewStarted: ${isInterviewStarted}, currentQuestionIndex: ${currentQuestionIndex}, interviewQuestions.length: ${interviewQuestions.length}`);
+                
+                isListening = false;
+                
+                if (!isInterviewStarted) {
+                    log('state-log', 'ERROR: Not in interview state, this should not happen');
+                    setStatus('state-status', 'State management test failed - not in interview state', 'error');
+                    return;
+                }
+                
+                log('state-log', 'Response processed successfully, moving to next question');
+                setStatus('state-status', 'State management test passed', 'success');
+            }
+            
+            // Test the flow
+            const questions = [
+                "Tell me about yourself and your background.",
+                "What are your strengths and weaknesses?",
+                "Why are you interested in this position?"
+            ];
+            
+            askQuestionWithQuestions(0, questions);
+            
+            setTimeout(() => {
+                processUserResponse("My name is John and I have 5 years of experience");
+            }, 2000);
+        }
+
+        function simulateInterviewFlow() {
+            log('flow-log', 'Simulating complete interview flow...');
+            
+            const questions = [
+                "Tell me about yourself and your background.",
+                "What are your strengths and weaknesses?",
+                "Why are you interested in this position?",
+                "Describe a challenging project you worked on.",
+                "Where do you see yourself in 5 years?"
+            ];
+            
+            let currentQuestion = 0;
+            let isInterviewStarted = false;
+            let waitingForUserResponse = false;
+            let isListening = false;
+            
+            function askQuestion(questionIndex) {
+                if (questionIndex < questions.length) {
+                    log('flow-log', `Question ${questionIndex + 1}: ${questions[questionIndex]}`);
+                    
+                    // Set state
+                    isInterviewStarted = true;
+                    waitingForUserResponse = true;
+                    
+                    // Simulate AI speaking
+                    setTimeout(() => {
+                        log('flow-log', 'AI finished speaking, starting to listen...');
+                        isListening = true;
+                        
+                        // Simulate user response after 2 seconds
+                        setTimeout(() => {
+                            log('flow-log', 'User responds: "I have 5 years of experience in software development..."');
+                            isListening = false;
+                            waitingForUserResponse = false;
+                            
+                            // Move to next question
+                            currentQuestion++;
+                            if (currentQuestion < questions.length) {
+                                setTimeout(() => askQuestion(currentQuestion), 1000);
+                            } else {
+                                log('flow-log', 'Interview completed successfully!');
+                                setStatus('flow-status', 'Interview flow simulation completed successfully', 'success');
+                            }
+                        }, 2000);
+                    }, 1000);
+                }
+            }
+            
+            setStatus('flow-status', 'Starting interview flow simulation...', 'info');
+            askQuestion(0);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+# ==========================
+# Stage 1: Build dependencies
+# ==========================
+FROM python:3.11-alpine AS builder
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install build dependencies
+RUN apk add --no-cache \
+    build-base \
+    libffi-dev \
+    postgresql-dev \
+    musl-dev \
+    linux-headers
+
+# Copy the requirements file
+COPY reserish/requirements.txt .
+
+# Install Python packages
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir torch==2.2.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html && \
+    pip install --no-cache-dir -r requirements.txt && \
+    rm -rf /root/.cache/pip
+
+# =======================
+# Stage 2: Final image
+# =======================
+FROM python:3.11-alpine
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    postgresql-libs \
+    chromium \
+    chromium-chromedriver \
+    xvfb \
+    netcat-openbsd \
+    # Clean up
+    && rm -rf /var/cache/apk/*
+
+# Set Chrome environment variables for headless mode
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
+
+# Copy installed Python packages from builder
+COPY --from=builder /usr/local /usr/local
+
+# Copy the application code
+COPY reserish/ .
+
+# Make entrypoint scripts executable
+RUN chmod +x /app/entrypoint_celery.sh /app/entrypoint_celery_beat.sh
+
+# Clean up Python cache files
+RUN find /usr/local -name "*.pyc" -delete \
+    && find /usr/local -name "__pycache__" -type d -delete
+
+# Default command
+CMD ["/app/entrypoint_celery.sh"]
+

@@ -1,0 +1,49 @@
+# ==========================
+# Stage 1: Build dependencies
+# ==========================
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# System dependencies required for building Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    gcc \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file
+COPY reserish/requirements.txt .
+
+# Upgrade pip and install required packages
+RUN pip install --upgrade pip && \ 
+    pip install --no-cache-dir -r requirements.txt && \
+    rm -rf /root/.cache/pip
+
+# =======================
+# Stage 2: Final image
+# =======================
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install only the runtime dependencies
+RUN apt-get update && apt-get install -y \
+    netcat-openbsd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# ✅ Correct: copy all packages from builder's /usr/local
+COPY --from=builder /usr/local /usr/local
+
+RUN sed -i -zE 's/(timeout\s*=\s*[^,]+),\s*\n\s*proxies\s*=\s*[^,)]+\n/\1\n/' /usr/local/lib/python3.*/site-packages/youtubesearchpython/core/*.py
+# Copy the actual Django project code
+COPY reserish/ .
+
+# Command to run
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn reserish.wsgi:application --bind 0.0.0.0:8000"]

@@ -186,3 +186,6 @@ reserish/sb2.tex
 reserish/static
 reserish/token.json
 reserish/bkend_function/individual/.env
+docker-compose.dj.yml
+docker-compose.pre.yml
+docker-compose.yml

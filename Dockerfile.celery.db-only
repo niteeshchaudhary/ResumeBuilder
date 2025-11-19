@@ -1,0 +1,84 @@
+# ==========================
+# Stage 1: Build dependencies
+# ==========================
+FROM python:3.11-alpine AS builder
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install minimal build dependencies
+RUN apk add --no-cache \
+    build-base \
+    libffi-dev \
+    postgresql-dev \
+    musl-dev
+
+# Copy database-only requirements
+COPY reserish/celery-db-only.txt .
+
+# Install only database-related packages (NO PyTorch, NO ML libraries)
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r celery-db-only.txt && \
+    rm -rf /root/.cache/pip
+
+# =======================
+# Stage 2: Final image
+# =======================
+FROM python:3.11-alpine
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install only runtime dependencies
+RUN apk add --no-cache \
+    postgresql-libs \
+    netcat-openbsd \
+    && rm -rf /var/cache/apk/*
+
+# Copy installed Python packages from builder
+COPY --from=builder /usr/local /usr/local
+
+# Copy only essential Django code for database operations
+COPY reserish/ .
+
+# Remove ML/AI related directories but PRESERVE entrypoint scripts
+RUN rm -rf /app/bkend_function/enterprise/ \
+    && rm -rf /app/bkend_function/individual/ \
+    && rm -rf /app/bkend_function/jobs/ \
+    && rm -rf /app/bkend_function/lataxtemplates/ \
+    && rm -rf /app/bkend_function/resume_src/ \
+    && rm -rf /app/bkend_function/text-vector/ \
+    && rm -rf /app/myExperiments/ \
+    && rm -rf /app/latex/ \
+    && rm -rf /app/migmedia/ \
+    && rm -rf /app/checkheck.py \
+    && rm -rf /app/compare.py \
+    && rm -rf /app/test.py \
+    && rm -rf /app/myoutput.json \
+    && rm -rf /app/sb2.tex \
+    && rm -rf /app/vercel.json \
+    && rm -rf /app/nw.yml \
+    && rm -rf /app/re1.txt \
+    && rm -rf /app/abc.txt \
+    && rm -rf /app/frontend/ \
+    && rm -rf /app/mig.sql \
+    && rm -rf /app/requirements.txt.bak \
+    && rm -rf /app/requirementsx.txt
+
+# Verify entrypoint scripts exist and make them executable
+RUN ls -la /app/entrypoint*.sh && \
+    chmod +x /app/entrypoint_celery.sh /app/entrypoint_celery_beat.sh && \
+    ls -la /app/entrypoint*.sh
+
+# Clean up all Python cache files
+RUN find /usr/local -name "*.pyc" -delete \
+    && find /usr/local -name "__pycache__" -type d -delete \
+    && find /app -name "*.pyc" -delete \
+    && find /app -name "__pycache__" -type d -delete
+
+# Default command
+CMD ["/app/entrypoint_celery.sh"]

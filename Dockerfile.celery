@@ -1,0 +1,86 @@
+# ==========================
+# Stage 1: Build dependencies
+# ==========================
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# System dependencies required for building Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    gcc \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file
+COPY reserish/requirements.txt .
+
+# Upgrade pip and install required packages
+# Install PyTorch CPU-only version (smaller than full version)
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir torch==2.2.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html && \
+    pip install --no-cache-dir -r requirements.txt && \
+    # Clean pip cache
+    rm -rf /root/.cache/pip
+
+# =======================
+# Stage 2: Final image
+# =======================
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install only essential system dependencies
+RUN apt-get update && apt-get install -y \
+    # Minimal Chrome dependencies
+    wget \
+    gnupg \
+    unzip \
+    curl \
+    # Selenium dependencies
+    xvfb \
+    # Essential system tools
+    netcat-openbsd \
+    # Clean up immediately
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/cache/apt
+
+# Install Google Chrome (minimal version)
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends google-chrome-stable \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/cache/apt
+
+# Install ChromeDriver (minimal)
+RUN CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` \
+    && wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
+    && unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ \
+    && rm /tmp/chromedriver.zip \
+    && chmod +x /usr/local/bin/chromedriver
+
+# Copy installed Python packages from builder
+COPY --from=builder /usr/local /usr/local
+
+# Copy the rest of the application code
+COPY reserish/ .
+
+# Make entrypoint scripts executable
+RUN chmod +x /app/entrypoint_celery.sh /app/entrypoint_celery_beat.sh
+
+# Clean up any unnecessary files
+RUN find /usr/local -name "*.pyc" -delete \
+    && find /usr/local -name "__pycache__" -type d -delete \
+    && find /usr/local -name "*.so" -exec strip {} \; 2>/dev/null || true
+
+# Default command to run Celery worker
+CMD ["/app/entrypoint_celery.sh"]

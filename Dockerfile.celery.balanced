@@ -1,0 +1,108 @@
+# ==========================
+# Stage 1: Build dependencies
+# ==========================
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# System dependencies required for building Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpq-dev \
+    gcc \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy the web scraping requirements (NO PyTorch, NO heavy ML)
+COPY reserish/celery-webscraping.txt .
+
+# Install required packages (NO PyTorch, NO transformers, NO scikit-learn)
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r celery-webscraping.txt && \
+    rm -rf /root/.cache/pip
+
+# =======================
+# Stage 2: Final image
+# =======================
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies for web scraping
+RUN apt-get update && apt-get install -y \
+    # Chrome dependencies
+    wget \
+    gnupg \
+    unzip \
+    curl \
+    # Selenium dependencies
+    xvfb \
+    # Essential tools
+    netcat-openbsd \
+    # Clean up immediately
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/cache/apt
+
+# Install Google Chrome (minimal version)
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends google-chrome-stable \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/cache/apt
+
+# Install ChromeDriver
+RUN CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` \
+    && wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
+    && unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/ \
+    && rm /tmp/chromedriver.zip \
+    && chmod +x /usr/local/bin/chromedriver
+
+# Copy installed Python packages from builder
+COPY --from=builder /usr/local /usr/local
+
+# Copy the application code
+COPY reserish/ .
+
+# Remove ML-heavy directories but keep web scraping capabilities
+RUN rm -rf /app/bkend_function/enterprise/ \
+    && rm -rf /app/bkend_function/individual/ \
+    && rm -rf /app/bkend_function/lataxtemplates/ \
+    && rm -rf /app/bkend_function/resume_src/ \
+    && rm -rf /app/bkend_function/text-vector/ \
+    && rm -rf /app/myExperiments/ \
+    && rm -rf /app/latex/ \
+    && rm -rf /app/migmedia/ \
+    && rm -rf /app/checkheck.py \
+    && rm -rf /app/compare.py \
+    && rm -rf /app/test.py \
+    && rm -rf /app/myoutput.json \
+    && rm -rf /app/sb2.tex \
+    && rm -rf /app/vercel.json \
+    && rm -rf /app/nw.yml \
+    && rm -rf /app/re1.txt \
+    && rm -rf /app/abc.txt \
+    && rm -rf /app/frontend/ \
+    && rm -rf /app/mig.sql \
+    && rm -rf /app/requirements.txt.bak \
+    && rm -rf /app/requirementsx.txt
+
+# Make entrypoint scripts executable
+RUN chmod +x /app/entrypoint_celery.sh /app/entrypoint_celery_beat.sh
+
+# Clean up Python cache files
+RUN find /usr/local -name "*.pyc" -delete \
+    && find /usr/local -name "__pycache__" -type d -delete \
+    && find /app -name "*.pyc" -delete \
+    && find /app -name "__pycache__" -type d -delete
+
+# Default command
+CMD ["/app/entrypoint_celery.sh"]
+

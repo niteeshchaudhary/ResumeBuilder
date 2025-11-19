@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .status.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>AI Interview System Test</h1>
+    
+    <div class="test-section">
+        <h2>Speech Recognition Test</h2>
+        <button class="test-button" onclick="testSpeechRecognition()">Test Speech Recognition</button>
+        <button class="test-button" onclick="testSpeechSynthesis()">Test Speech Synthesis</button>
+        <div id="speech-status" class="status info">Ready to test</div>
+        <div id="speech-log" class="log"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Interview Flow Test</h2>
+        <button class="test-button" onclick="testInterviewFlow()">Test Complete Interview Flow</button>
+        <div id="interview-status" class="status info">Ready to test</div>
+        <div id="interview-log" class="log"></div>
+    </div>
+
+    <script>
+        let recognition = null;
+        let isListening = false;
+
+        function log(elementId, message) {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            element.textContent += `[${timestamp}] ${message}\n`;
+            element.scrollTop = element.scrollHeight;
+        }
+
+        function setStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+
+        function testSpeechRecognition() {
+            log('speech-log', 'Testing speech recognition...');
+            
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                setStatus('speech-status', 'Speech recognition not supported', 'error');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                log('speech-log', 'Speech recognition started');
+                setStatus('speech-status', 'Listening...', 'info');
+                isListening = true;
+            };
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                if (interimTranscript) {
+                    log('speech-log', `Interim: ${interimTranscript}`);
+                }
+
+                if (finalTranscript) {
+                    log('speech-log', `Final: ${finalTranscript}`);
+                    setStatus('speech-status', 'Speech detected: ' + finalTranscript, 'success');
+                }
+            };
+
+            recognition.onerror = (event) => {
+                log('speech-log', `Error: ${event.error}`);
+                setStatus('speech-status', 'Error: ' + event.error, 'error');
+                isListening = false;
+            };
+
+            recognition.onend = () => {
+                log('speech-log', 'Speech recognition ended');
+                setStatus('speech-status', 'Stopped listening', 'info');
+                isListening = false;
+            };
+
+            try {
+                recognition.start();
+            } catch (error) {
+                log('speech-log', `Failed to start: ${error.message}`);
+                setStatus('speech-status', 'Failed to start: ' + error.message, 'error');
+            }
+        }
+
+        function testSpeechSynthesis() {
+            log('speech-log', 'Testing speech synthesis...');
+            
+            if (!('speechSynthesis' in window)) {
+                setStatus('speech-status', 'Speech synthesis not supported', 'error');
+                return;
+            }
+
+            const utterance = new SpeechSynthesisUtterance('Hello, this is a test of the speech synthesis system. Can you hear me clearly?');
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            utterance.volume = 0.8;
+
+            utterance.onstart = () => {
+                log('speech-log', 'Speech synthesis started');
+                setStatus('speech-status', 'Speaking...', 'info');
+            };
+
+            utterance.onend = () => {
+                log('speech-log', 'Speech synthesis ended');
+                setStatus('speech-status', 'Speech synthesis test completed', 'success');
+            };
+
+            utterance.onerror = (event) => {
+                log('speech-log', `Speech synthesis error: ${event.error}`);
+                setStatus('speech-status', 'Speech synthesis error: ' + event.error, 'error');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function testInterviewFlow() {
+            log('interview-log', 'Testing interview flow...');
+            
+            // Simulate the interview flow
+            const questions = [
+                "Tell me about yourself and your experience.",
+                "What are your strengths and weaknesses?",
+                "Why are you interested in this position?",
+                "Describe a challenging project you worked on.",
+                "Where do you see yourself in 5 years?"
+            ];
+
+            let currentQuestion = 0;
+            
+            function askQuestion() {
+                if (currentQuestion < questions.length) {
+                    const question = questions[currentQuestion];
+                    log('interview-log', `Question ${currentQuestion + 1}: ${question}`);
+                    
+                    // Simulate AI speaking
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance(question);
+                        utterance.onend = () => {
+                            log('interview-log', 'AI finished speaking, waiting for user response...');
+                            // Simulate listening phase
+                            setTimeout(() => {
+                                log('interview-log', 'Simulating user response...');
+                                // Simulate user response
+                                setTimeout(() => {
+                                    log('interview-log', 'User response: "I have 5 years of experience in software development..."');
+                                    // Move to next question
+                                    currentQuestion++;
+                                    if (currentQuestion < questions.length) {
+                                        setTimeout(askQuestion, 2000);
+                                    } else {
+                                        log('interview-log', 'Interview completed!');
+                                        setStatus('interview-status', 'Interview flow test completed successfully', 'success');
+                                    }
+                                }, 3000);
+                            }, 1000);
+                        };
+                        window.speechSynthesis.speak(utterance);
+                    } else {
+                        log('interview-log', 'Speech synthesis not available, simulating text-only flow');
+                        setTimeout(() => {
+                            currentQuestion++;
+                            if (currentQuestion < questions.length) {
+                                setTimeout(askQuestion, 2000);
+                            } else {
+                                log('interview-log', 'Interview completed!');
+                                setStatus('interview-status', 'Interview flow test completed successfully', 'success');
+                            }
+                        }, 2000);
+                    }
+                }
+            }
+
+            setStatus('interview-status', 'Starting interview flow test...', 'info');
+            askQuestion();
+        }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            if (recognition && isListening) {
+                recognition.stop();
+            }
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        });
+    </script>
+</body>
+</html>

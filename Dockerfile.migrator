@@ -1,0 +1,11 @@
+# Dockerfile.migrator
+FROM busybox
+
+# Add local media directory to image
+COPY reserish/media /app
+
+# Set working directory
+WORKDIR /app
+
+# Use shell as entrypoint
+ENTRYPOINT ["/bin/sh", "-c"]
