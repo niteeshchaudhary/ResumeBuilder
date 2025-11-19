@@ -1,0 +1,12 @@
+.break{
+  display: none;
+}
+@media screen and (max-width: 460px) {
+  .break{
+    display: block;
+  }
+  .sideimage {
+      display: none;
+    }
+  
+}

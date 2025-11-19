@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Static Pages -->
+  <url><loc>https://resumeupgrader.in/</loc></url>
+  <url><loc>https://resumeupgrader.in/features</loc></url>
+  <url><loc>https://resumeupgrader.in/aboutus</loc></url>
+  <url><loc>https://resumeupgrader.in/support</loc></url>
+  <url><loc>https://resumeupgrader.in/pricing</loc></url>
+  <url><loc>https://resumeupgrader.in/privacypolicy</loc></url>
+  <url><loc>https://resumeupgrader.in/termsandconditions</loc></url>
+  <url><loc>https://resumeupgrader.in/refundpolicy</loc></url>
+
+  <!-- User Routes -->
+  <url><loc>https://resumeupgrader.in/u/login</loc></url>
+  <url><loc>https://resumeupgrader.in/u/signup</loc></url>
+  <url><loc>https://resumeupgrader.in/u/</loc></url>
+  <url><loc>https://resumeupgrader.in/u/checkout</loc></url>
+  <url><loc>https://resumeupgrader.in/u/pricing</loc></url>
+  <url><loc>https://resumeupgrader.in/u/profile</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumegrader</loc></url>
+  <url><loc>https://resumeupgrader.in/u/overallrating</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/existing</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/resumewithai</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/flowchart</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit/personal</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit/education</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit/experience</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit/projects</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit/achievements</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit/certifications</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit/research</loc></url>
+  <url><loc>https://resumeupgrader.in/u/resumebuilder/edit/skills</loc></url>
+  <url><loc>https://resumeupgrader.in/u/joblist</loc></url>
+  <url><loc>https://resumeupgrader.in/u/applications</loc></url>
+  <url><loc>https://resumeupgrader.in/u/transactions</loc></url>
+
+  <!-- Job Listings Page -->
+  <url><loc>https://resumeupgrader.in/jobpostings</loc></url>
+
+  <!-- Email Verification and Reset -->
+  <url><loc>https://resumeupgrader.in/verifyemail/:uidb64/:token</loc></url>
+  <url><loc>https://resumeupgrader.in/reset-password/:uidb64/:token</loc></url>
+
+</urlset>

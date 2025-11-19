@@ -1,0 +1,18 @@
+.myiframecontainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200vh;
+}
+@media screen and (max-width: 768px){
+    .myiframecontainer{
+        height: 80vh;
+    }
+    
+}
+@media screen and (max-width: 480px){
+    .myiframecontainer{
+        height: 100vh;
+    }
+    
+}

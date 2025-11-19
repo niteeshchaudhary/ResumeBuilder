@@ -1,0 +1,271 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Light/Dark base colors to ensure readable contrast */
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+
+html, body, #root {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+}
+
+/* Improve readability by remapping common text utilities in dark mode */
+.dark .text-gray-900 { color: #f3f4f6 !important; }
+.dark .text-gray-800 { color: #e5e7eb !important; }
+.dark .text-gray-700 { color: #e5e7eb !important; }
+.dark .text-gray-600 { color: #d1d5db !important; }
+
+/* Map common light backgrounds to dark equivalents */
+.dark .bg-white { background-color: #0b1220 !important; }
+.dark .bg-gray-50 { background-color: #0f172a !important; }
+.dark .bg-gray-100 { background-color: #111827 !important; }
+.dark .bg-gray-200 { background-color: #1f2937 !important; }
+.dark .bg-white\/80 { background-color: rgba(11, 18, 32, 0.8) !important; }
+.dark .bg-white\/60 { background-color: rgba(11, 18, 32, 0.6) !important; }
+
+/* Hover mappings for common utilities */
+.dark .hover\:bg-gray-50:hover { background-color: #1f2937 !important; }
+.dark .hover\:bg-gray-100:hover { background-color: #374151 !important; }
+.dark .hover\:bg-gray-200:hover { background-color: #4b5563 !important; }
+.dark .hover\:bg-white:hover { background-color: #111827 !important; }
+
+/* Borders and dividers in dark mode */
+.dark .border-gray-100 { border-color: #1f2937 !important; }
+.dark .border-gray-200 { border-color: #374151 !important; }
+.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) { border-color: #374151 !important; }
+
+/* Form controls in dark mode */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="number"],
+.dark input[type="search"],
+.dark input[type="tel"],
+.dark input[type="url"],
+.dark input[type="date"],
+.dark input[type="time"],
+.dark input[type="datetime-local"],
+.dark input[type="month"],
+.dark input[type="week"],
+.dark textarea,
+.dark select {
+  @apply bg-gray-900 text-gray-100 placeholder-gray-400 border border-gray-600;
+}
+
+.dark input[type="checkbox"],
+.dark input[type="radio"] {
+  @apply accent-blue-500;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  @apply ring-1 ring-blue-500 border-blue-500 outline-none;
+}
+
+.dark input:disabled,
+.dark textarea:disabled,
+.dark select:disabled {
+  @apply bg-gray-800 text-gray-400 border-gray-700 opacity-75;
+}
+
+/* Gradient utility overrides in dark mode */
+/* Generic mapping for common light gradients used across pages */
+.dark .from-white { --tw-gradient-from: #0b1220 !important; --tw-gradient-to: rgb(11 18 32 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .via-white { --tw-gradient-stops: var(--tw-gradient-from), #111827, var(--tw-gradient-to) !important; }
+.dark .to-white { --tw-gradient-to: #0b1220 !important; }
+
+.dark .from-gray-50 { --tw-gradient-from: #0f172a !important; --tw-gradient-to: rgb(15 23 42 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .via-gray-50 { --tw-gradient-stops: var(--tw-gradient-from), #0f172a, var(--tw-gradient-to) !important; }
+.dark .to-gray-50 { --tw-gradient-to: #0f172a !important; }
+
+.dark .from-gray-100 { --tw-gradient-from: #111827 !important; --tw-gradient-to: rgb(17 24 39 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .via-gray-100 { --tw-gradient-stops: var(--tw-gradient-from), #111827, var(--tw-gradient-to) !important; }
+.dark .to-gray-100 { --tw-gradient-to: #111827 !important; }
+
+.dark .from-gray-100\/90 { --tw-gradient-from: rgb(17 24 39 / 0.9) !important; --tw-gradient-to: rgb(17 24 39 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .to-gray-200\/90 { --tw-gradient-to: rgb(31 41 55 / 0.9) !important; }
+
+.dark .from-blue-50 { --tw-gradient-from: #0f172a !important; --tw-gradient-to: rgb(15 23 42 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .to-blue-50 { --tw-gradient-to: #0b1220 !important; }
+.dark .via-blue-50 { --tw-gradient-stops: var(--tw-gradient-from), #0f172a, var(--tw-gradient-to) !important; }
+
+.dark .from-indigo-50 { --tw-gradient-from: #0f172a !important; --tw-gradient-to: rgb(15 23 42 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .to-indigo-100 { --tw-gradient-to: #0b1220 !important; }
+.dark .to-indigo-50 { --tw-gradient-to: #0b1220 !important; }
+.dark .via-indigo-50 { --tw-gradient-stops: var(--tw-gradient-from), #0f172a, var(--tw-gradient-to) !important; }
+
+.dark .from-violet-100 { --tw-gradient-from: #0f172a !important; --tw-gradient-to: rgb(15 23 42 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .to-blue-100 { --tw-gradient-to: #0b1220 !important; }
+.dark .to-blue-50 { --tw-gradient-to: #0b1220 !important; }
+
+.dark .from-purple-50 { --tw-gradient-from: #0f172a !important; --tw-gradient-to: rgb(15 23 42 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .to-purple-50 { --tw-gradient-to: #0b1220 !important; }
+
+.dark .from-green-50 { --tw-gradient-from: #0f172a !important; --tw-gradient-to: rgb(15 23 42 / 0) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+.dark .to-emerald-100 { --tw-gradient-to: #0b1220 !important; }
+
+/* :root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+} */
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+/* body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 100%;
+  min-height: 100vh;
+} */
+/* 
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+} */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+button:hover,
+button:focus,
+button:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Novu Inbox styling for better theme integration */
+.dark [data-novu-inbox] {
+  color-scheme: dark;
+}
+
+[data-novu-inbox] {
+  color-scheme: light;
+}
+
+/* Ensure Novu dropdown text is visible in both themes */
+[data-novu-inbox] * {
+  color: inherit !important;
+}
+
+.dark [data-novu-inbox] * {
+  color: #f3f4f6 !important;
+}
+
+/* Specific styling for Novu notification items */
+[data-novu-inbox] [data-test-id="notification-item"],
+[data-novu-inbox] [data-test-id="notification-content"],
+[data-novu-inbox] [data-test-id="notification-title"],
+[data-novu-inbox] [data-test-id="notification-text"] {
+  color: inherit !important;
+}
+
+.dark [data-novu-inbox] [data-test-id="notification-item"],
+.dark [data-novu-inbox] [data-test-id="notification-content"],
+.dark [data-novu-inbox] [data-test-id="notification-title"],
+.dark [data-novu-inbox] [data-test-id="notification-text"] {
+  color: #f3f4f6 !important;
+}
+
+/* Ensure dropdown background adapts to theme */
+[data-novu-inbox] [data-test-id="inbox-popover"] {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+.dark [data-novu-inbox] [data-test-id="inbox-popover"] {
+  background-color: #111827 !important;
+  border: 1px solid #374151 !important;
+}
+
+/* Style the notification bell icon container */
+[data-novu-inbox] [data-test-id="notification-bell"] {
+  color: #6b7280 !important;
+}
+
+.dark [data-novu-inbox] [data-test-id="notification-bell"] {
+  color: #d1d5db !important;
+}
+
+/* Ensure proper contrast for unread indicators */
+[data-novu-inbox] [data-test-id="unseen-count"] {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+.dark [data-novu-inbox] [data-test-id="unseen-count"] {
+  background-color: #ef4444 !important;
+  color: white !important;
+}
+
+/* .group::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.group::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.group:hover::-webkit-scrollbar-thumb {
+  background: #9ca3af; 
+} */
