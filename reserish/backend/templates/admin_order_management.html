@@ -1,0 +1,221 @@
+<!-- admin_order_management.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin Order Management</title>
+  </head>
+  <style>
+    /* CSS for Tables */
+
+    /* Table Container */
+    .table-container {
+        width: 100%;
+        overflow-x: auto; /* Enable horizontal scrolling */
+    }
+
+    /* Table */
+    .table {
+        width: 100%;
+        border-collapse: collapse; /* Collapse table borders */
+        border-spacing: 0; /* Remove spacing between table cells */
+    }
+
+    /* Table Header */
+    .table thead th {
+        background-color: #f2f2f2;
+        color: #333;
+        font-weight: bold;
+        text-align: left;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    /* Table Body */
+    .table tbody td {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    /* Table Rows - Alternating Background Colors */
+    .table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    /* Hover Effect */
+    .table tbody tr:hover {
+        background-color: #e0e0e0;
+    }
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px 0px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff; /* Default button color */
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+    
+    /* Button Hover Effect */
+    .button:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+    }
+    
+    /* Primary Button */
+    .primary-button {
+        background-color: #007bff; /* Primary button color */
+    }
+    
+    /* Secondary Button */
+    .secondary-button {
+        background-color: #6c757d; /* Secondary button color */
+    }
+    
+    /* Success Button */
+    .success-button {
+        background-color: #28a745; /* Success button color */
+    }
+    
+    /* Danger Button */
+    .danger-button {
+        background-color: #dc3545; /* Danger button color */
+    }
+    
+    /* CSS for Select Elements */
+    
+    /* Base Select Styles */
+    select {
+        display: block;
+        width: 100%;
+        padding: 8px;
+        margin: 10px 0px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #495057;
+        font-size: 14px;
+        line-height: 1.5;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+   
+    
+    /* Select Focus Styles */
+    select:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+    
+    /* Select Disabled Styles */
+    select:disabled {
+        background-color: #e9ecef;
+        opacity: 1;
+    }
+
+  </style>
+  <body>
+    <h1>Admin Order Management</h1>
+    <form method="post">
+      {% csrf_token %}
+      <label for="status">Filter by Status:</label>
+      <select id="status" name="status" class="select">
+        <option value="Processing" {% if status == "Processing" %} selected {% endif %}>Processing</option>
+        <option value="Shipped" {% if status == "Shipped" %} selected {% endif %}>Shipped</option>
+        <option value="Delivered" {% if status == "Delivered" %} selected {% endif %}>Delivered</option>
+        <option value="Cancelled" {% if status == "Cancelled" %} selected {% endif %}>Cancelled</option>
+        <option value="">All</option>
+      </select>
+      <button type="submit" class="button">Filter</button>
+    </form>
+    <table border="1" width="100%" class="table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>User</th>
+          <th>Items</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.order.id }}</td>
+          <td>{{ order.order.user.email }}</td>
+          <td>
+            {% comment %}
+            <form method="post">
+              action="{% url 'update_order_status' order.id %}" {% csrf_token %}
+              <select name="status">
+                <option value="Processing">Processing</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+              {%
+                        comment
+                        %}
+                        action="{% url 'update_order_item_status' order_item.id %}"
+                        {%
+                        endcomment
+                        %}
+              <button type="submit">Update Status</button>
+            </form>
+            {% endcomment %}
+            <div
+              style="
+                min-height: 10px;
+                height: auto;
+                min-width: 200px;
+                width: auto;
+              "
+            >
+              <table border="1" width="100%" class="table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order_item in order.products %}
+                  <tr>
+                    <td>{{ order_item.product.name}}</td>
+                    <td>{{ order_item.quantity }}</td>
+                    <td>{{ order_item.status }}</td>
+                    <td>
+                      <form method="post" action='update/{{order_item.id}}/'>
+                        {% csrf_token %}
+                        <select name="status">
+                          <option value="" selected disabled hidden>
+                            select
+                          </option>
+                          <option value="Processing">Processing</option>
+                          <option value="Shipped">Shipped</option>
+                          <option value="Delivered">Delivered</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <button type="submit" class="button">Update Status</button>
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </tr>
+        <!-- Sublist for OrderItems -->
+        <tr>
+          <td colspan="4"></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

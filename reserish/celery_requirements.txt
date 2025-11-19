@@ -1,0 +1,30 @@
+# celery
+# redis
+# django-celery-beat
+# django-celery-results
+# dotenv
+# django-cors-headers
+# djangorestframework-simplejwt
+# djangorestframework
+# channels
+# psycopg2-binary
+# requests
+# razorpay
+celery
+redis
+requests
+python-dotenv
+psycopg2-binary
+django-cors-headers
+selenium
+channels
+django-celery-beat
+django-celery-results
+djangorestframework-simplejwt
+djangorestframework
+gunicorn
+django_redis
+pymongo==4.12.0
+dnspython==2.7.0 
+novu
+novu-py

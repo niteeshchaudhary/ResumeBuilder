@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Shipped</title>
+    <style>
+        /* Inline CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-width: 100%;
+            height: auto;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .order-details {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        .order-item {
+            margin-bottom: 10px;
+        }
+        .tracking-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <!-- Replace 'http://example.com/path/to/your/logo.png' with the URL of your logo -->
+            <img src="http://example.com/path/to/your/logo.png" alt="Logo">
+        </div>
+        <h1>Your Order Has Been Shipped!</h1>
+        <p>Hello {{ username }},</p>
+        <p>We're excited to let you know that your order has been shipped. Here are the details:</p>
+        <div class="order-details">
+            <div class="order-item">
+                <strong>Order Number:</strong> {{ order_number }}
+            </div>
+            <div class="order-item">
+                <strong>Shipment Date:</strong> {{ shipment_date }}
+            </div>
+            <div class="order-item">
+                <strong>Carrier:</strong> {{ carrier }}
+            </div>
+            <div class="order-item">
+                <strong>Tracking Number:</strong> {{ tracking_number }}
+            </div>
+            <!-- You can include more details about the shipment here -->
+        </div>
+        <div class="tracking-info">
+            <p>You can track your package using the following link:</p>
+            <p><a href="{{ tracking_link }}">{{ tracking_link }}</a></p>
+        </div>
+        <p>If you have any questions or concerns regarding your shipment, please feel free to contact us.</p>
+        <p>Best regards,<br>Merch Crypto</p>
+    </div>
+</body>
+</html>

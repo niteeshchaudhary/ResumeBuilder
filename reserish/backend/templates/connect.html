@@ -1,0 +1,25 @@
+<!-- Include web3.js in your Django template -->
+<script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
+
+<script>
+  // Check if MetaMask is installed and connected
+  if (window.ethereum) {
+    const web3 = new Web3(window.ethereum);
+
+    // Request account access
+    window.ethereum.request({ method: 'eth_requestAccounts' })
+      .then(accounts => {
+        const userAddress = accounts[0];
+
+        // Use the user's Ethereum address in your Django application
+        console.log('User Address:', userAddress);
+
+        // Perform other actions, such as sending transactions or interacting with smart contracts
+      })
+      .catch(error => {
+        console.error('Error connecting to MetaMask:', error);
+      });
+  } else {
+    console.error('MetaMask not detected. Please install MetaMask.');
+  }
+</script>

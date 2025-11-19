@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>New Interview Booking</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #007bff; color: white; padding: 20px; border-radius: 8px; text-align: center; }
+        .details { background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .meeting-link { background-color: #28a745; color: white; padding: 15px; border-radius: 6px; text-align: center; margin: 20px 0; }
+        .meeting-link a { color: white; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>📋 New Interview Booking Received</h2>
+        </div>
+        
+        <div class="details">
+            <h3>👤 User Details</h3>
+            <p><strong>Email:</strong> {{ user_email }}</p>
+            <p><strong>Name:</strong> {{ user_name }}</p>
+            
+            <h3>📅 Session Details</h3>
+            <p><strong>Date:</strong> {{ slot_date|date:"l, F d, Y" }}</p>
+            <p><strong>Time:</strong> {{ start_time|time:"g:i A" }} - {{ end_time|time:"g:i A" }}</p>
+            <p><strong>Duration:</strong> {{ duration_minutes }} minutes</p>
+            
+            <h3>📝 Notes</h3>
+            <p>{{ notes|default:"No notes provided" }}</p>
+        </div>
+        
+        <div class="meeting-link">
+            <h3>🔗 Meeting Link</h3>
+            <a href="{{ meeting_link }}" target="_blank">{{ meeting_link }}</a>
+        </div>
+        
+        <p><strong>Please ensure an interviewer is available for this session.</strong></p>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,48 @@
+<!-- ecom_app/templates/admin/ecom_app/modelname/add_form.html -->
+<script src="
+https://cdn.jsdelivr.net/npm/web3@4.4.0/dist/web3.min.js
+"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/ethers@6.10.0/lib.commonjs/index.min.js
+">
+{% extends "admin/change_form.html" %} {% block extrastyle %} {% load static %}
+
+{{ block.super }} 
+ {% endblock %} 
+ {% block content %}
+    {{ block.super }}
+    {% comment %} <h1>{{original.id}} - yo</h1> {% endcomment %}
+    
+    {% comment %} <div>
+        <h2>Additional Information</h2>
+        <p>Field 1: {{ original.id }}</p>
+        <p>Field 2: {{ original.name }}</p>
+        <!-- Add more fields as needed -->
+    </div> {% endcomment %}
+    <script type="text/javascript">
+      function generateUniqueId() {
+        const timestamp = new Date().getTime(); // milliseconds
+        const randomPart = Math.floor(Math.random() * 1024); // adjust range based on your needs
+        return Math.abs((timestamp << 10) | randomPart);
+      }
+      {% if original.id %}
+      console.log("yes",{{original.id}},"**")
+      const id={{original.id}};
+  {% else %}
+  
+  const id= -1* generateUniqueId();
+  console.log("no",id)
+  {% endif %}
+    </script>
+      
+<script type="text/javascript" src="{% static 'ecom_app/js/custom_admin.js' %}">
+</script>
+  {% comment %} var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+  // Example: Log the current block number
+  web3.eth.getBlockNumber().then(function (blockNumber) {
+    console.log("Current Block Number:", blockNumber);
+  }); {% endcomment %}
+  
+</script>
+{% endblock %}

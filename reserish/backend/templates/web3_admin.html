@@ -1,0 +1,18 @@
+<script src="https://cdn.jsdelivr.net/npm/web3@1.3.4/dist/web3.min.js"></script>
+
+{% extends 'admin/base_site.html' %} {% block content %}
+<div id="web3-container">
+  <!-- Your Web3 integration code goes here -->
+</div>
+
+<script>
+  // Your custom Web3 code here
+  // Example: Initialize Web3 and connect to a provider
+  var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+  // Example: Log the current block number
+  web3.eth.getBlockNumber().then(function (blockNumber) {
+    console.log("Current Block Number:", blockNumber);
+  });
+</script>
+{% endblock %}

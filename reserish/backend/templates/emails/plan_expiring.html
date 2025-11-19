@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #2563eb;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+
+        .button {
+            display: inline-block;
+            background: #28d525;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .button:hover {
+            color: #ffffff;
+            background: #057129;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Hi {% if username %}{{ username }}{% else %}there{% endif %},</h2>
+        <p>Your {{ plan_name }} plan is expiring on {{ expiry_date|date:"F j, Y" }}.</p>
+
+        <p>To continue enjoying all the benefits:</p>
+        <a href="{{ renewal_url }}" class="button">Renew Your Plan Now</a>
+
+        <p>If you have any questions, reply to this email or contact our
+            <a href="mailto:{{ support_email }}">support team</a>.
+        </p>
+
+        <p>Best regards,<br />The {{ site_name }} Team</p>
+
+        <div class="footer">
+            &copy; {{ current_year }} {{ site_name }}. All rights reserved.
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Marketplace</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Seller</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.seller }}</td>
+          {% if not product.sold %}
+            <td><a href="{% url 'buy_product' product.id %}">Buy</a></td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h2>Sell Product</h2>
+  <form method="post" action="{% url 'sell_product' %}">
+    {% csrf_token %}
+    <label for="name">Name:</label>
+    <input type="text" name="name"><br>
+    <label for="description">Description:</label>
+    <textarea name="description"></textarea><br>
+    <label for="price">Price:</label>
+    <input type="text" name="price"><br>
+    <input type="submit" value="Sell">
+  </form>
+{% endblock %}
